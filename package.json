@@ -10,7 +10,8 @@
     "server": "nodemon server.js",
     "server-prod": "node app.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "start": "npm run build && yarn server-prod"
+    "start": "yarn server-prod",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "author": "",
   "license": "ISC",
