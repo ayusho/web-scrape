@@ -1,13 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import Snackbar from '@material-ui/core/Snackbar';
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
+import Snackbar from "@material-ui/core/Snackbar";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Sources from "../../components/Sources/Sources";
-import LinearProgress from '@material-ui/core/LinearProgress';
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 import axios from "axios";
 
@@ -48,47 +48,54 @@ class HomePage extends React.Component {
   };
   handleClick = async (event) => {
     this.setState({
-      fetch: true
-    })
-    let body = { url: this.state.url };
-    let res = await axios.post("/api/scrape/", body);
-    this.setState({
-      sources: res.data,
-      fetch: false
+      fetch: true,
     });
+    let body = { url: this.state.url };
+    try {
+      let res = await axios.post("/api/scrape/", body);
+      this.setState({
+        sources: res.data,
+        fetch: false,
+      });
+    } catch (error) {
+      console.log("Something went wrong");
+      this.setState({
+        fetch: false,
+      });
+    }
   };
 
-  handleSave = async (numSelected, selected ) => {
+  handleSave = async (numSelected, selected) => {
     let sourcesToSave = [];
     let { sources } = this.state;
-    for(let index of selected) {
+    for (let index of selected) {
       sourcesToSave.push(sources[index]);
     }
 
     try {
-      await axios.post('/api/sources/', sourcesToSave);
+      await axios.post("/api/sources/", sourcesToSave);
       this.setState({
-        open: true
+        open: true,
       });
     } catch (error) {
-      console.log('Failed');
+      console.log("Failed");
     }
-  }
+  };
 
   handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
     this.setState({
-      open: false
+      open: false,
     });
   };
   render() {
     const { classes } = this.props;
     return (
       <div className="homepage">
-          {this.state.fetch ? <LinearProgress color="secondary" />: ""}
+        {this.state.fetch ? <LinearProgress color="secondary" /> : ""}
 
         <Button to="/sources">
           <Link to="/sources"></Link>
@@ -112,27 +119,32 @@ class HomePage extends React.Component {
             SCRAPE
           </Button>
         </form>
-        <Sources sources={this.state.sources} handleSave={this.handleSave}/>
+        <Sources sources={this.state.sources} handleSave={this.handleSave} />
         <Snackbar
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
-        }}
-        open={this.state.open}
-        autoHideDuration={6000}
-        onClose={this.handleClose}
-        message="Source Saved"
-        action={
-          <React.Fragment>
-            <Button color="primary" size="small" onClick={this.handleClose}>
-              Saved
-            </Button>
-            <IconButton size="small" aria-label="close" color="inherit" onClick={this.handleClose}>
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </React.Fragment>
-        }
-      />
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          open={this.state.open}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          message="Source Saved"
+          action={
+            <React.Fragment>
+              <Button color="primary" size="small" onClick={this.handleClose}>
+                Saved
+              </Button>
+              <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={this.handleClose}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+          }
+        />
       </div>
     );
   }

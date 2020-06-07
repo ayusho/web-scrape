@@ -22,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     fontSize: "35px"
   },
+  subtitle: {
+    flexGrow: 1,
+    textDecoration: 'none',
+    color: "white",
+    fontSize: "25px",
+  }
 }));
 
 export default function Header() {
@@ -32,7 +38,10 @@ export default function Header() {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title} component={RouterLink} to="/">
-            Web Scraper
+            Scrapp
+          </Typography>
+          <Typography variant="h6" className={classes.subtitle} component={RouterLink} to="/">
+            Scrape the web
           </Typography>
           <Button color="inherit" component={RouterLink} to="/sources">Sources</Button>
         </Toolbar>

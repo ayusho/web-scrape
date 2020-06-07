@@ -7,10 +7,14 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 var data = require('./data');
 
+var head = 'http://'
+//scrape api for scraping the webpage and listing out headers and URLs
 exports.post = async (req, res, next) => {
   try {
     let URL = req.body.url;
     let links = [];
+
+    URL = !URL.includes(head)? head+URL: URL; //if http:// not present, update URL
     request(URL, async function (error, response, body) {
       if (error) {
         return console.error("There was an error!");
@@ -21,9 +25,15 @@ exports.post = async (req, res, next) => {
         var caption = $(this).text();
         var url = $(this).attr("href");
         let finalUrl = url;
+        
+        //cleaning the URL obtained during scraping, handling relative/absolute URLs
         if (url && url.length > 5 && caption.trim().length > 0) {
           let finalUrl;
-          if (url[0] == "/") {
+          console.log(caption, url);
+          if(url[0] == "/" && url[1] == "/"){
+            links.push({ caption: caption.trim(), url: head + url.substr(2) });
+          }
+          else if (url[0] == "/") {
             finalUrl = URL + url;
             links.push({ caption: caption.trim(), url: finalUrl });
           } else {
@@ -36,6 +46,8 @@ exports.post = async (req, res, next) => {
 
       let newLink = [];
       let id = 0;
+
+      //get headers of all URLs asynchronously and send as response
       await Promise.all(
         links.map(async (link) => {
           try {
@@ -43,7 +55,8 @@ exports.post = async (req, res, next) => {
             const headers = getHeaders(res.headers);
             newLink.push({ id: id++, ...link, ...headers });
           } catch (error) {
-            console.log(error.message);
+            logger.log(error.message);
+            logger.log(link.url);
           }
         })
       );
@@ -56,6 +69,7 @@ exports.post = async (req, res, next) => {
   }
 };
 
+//function to get headers from response.headers
 function getHeaders(headers) {
   const content_length = headers["content-length"]
     ? headers["content-length"]
@@ -71,6 +85,3 @@ function getHeaders(headers) {
   return { content_length, last_modified, content_encoding, server };
 }
 
-exports.get = (req, res, next) => {
-  res.send(data);
-}

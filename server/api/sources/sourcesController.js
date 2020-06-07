@@ -4,6 +4,7 @@ var logger = require("../../util/logger");
 var _ = require("lodash");
 var mongoose = require("mongoose");
 
+//save the array of sources to Sources collections
 exports.post = async (req, res, next) => {
   try {
     let newSource = req.body;
@@ -15,6 +16,7 @@ exports.post = async (req, res, next) => {
   }
 };
 
+//get all the documents from Sources Collection
 exports.get = async (req, res, next) => {
   try {
     let result = await Sources.find({});

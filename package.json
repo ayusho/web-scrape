@@ -7,12 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "client": "cd client && npm start",
     "build": "cd client && npm run build",
-    "server": "nodemon server.js",
+    "server": "nodemon app.js",
     "server-prod": "node app.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
     "start": "yarn server-prod",
     "heroku-postbuild": "cd client && npm install && npm run build"
   },
+  "proxy": "http://localhost:8082",
   "author": "",
   "license": "ISC",
   "dependencies": {

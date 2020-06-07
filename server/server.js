@@ -15,10 +15,12 @@ require("./middleware/appMiddleware")(app);
 
 app.use("/api", api);
 
+//run the production build of react server
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
 });
 
+//error handling middleware
 app.use(err());
 
 module.exports = app;
